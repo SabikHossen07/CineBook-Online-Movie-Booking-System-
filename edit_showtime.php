@@ -26,13 +26,28 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title']);
     $genre = trim($_POST['genre']);
-    $show_date = trim($_POST['show_date']);
+    $duration = trim($_POST['duration']);
+    $language = trim($_POST['language']);
+    $rating = trim($_POST['rating']);
+    $description = trim($_POST['description']);
+    $image = trim($_POST['image']);
     $showtimes = trim($_POST['showtimes']);
+    $show_date = trim($_POST['show_date']);
     $hall = trim($_POST['hall']);
     $price = trim($_POST['price']);
 
     $sql = "UPDATE movies 
-            SET title='$title', genre='$genre', show_date='$show_date', showtimes='$showtimes', hall='$hall', price='$price'
+            SET title='$title',
+                genre='$genre',
+                duration='$duration',
+                language='$language',
+                rating='$rating',
+                description='$description',
+                image='$image',
+                showtimes='$showtimes',
+                show_date='$show_date',
+                hall='$hall',
+                price='$price'
             WHERE id=$id";
 
     if ($conn->query($sql) === TRUE) {
@@ -58,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       padding: 0;
     }
     .container {
-      max-width: 700px;
-      margin: 60px auto;
+      max-width: 760px;
+      margin: 40px auto;
       background: linear-gradient(135deg, #111827, #1e293b);
       padding: 30px;
       border-radius: 20px;
@@ -75,13 +90,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin: 14px 0 8px;
       font-weight: bold;
     }
-    input {
+    input, textarea {
       width: 100%;
       padding: 12px;
       border-radius: 10px;
       border: none;
       outline: none;
       font-size: 15px;
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
     }
     button, .back-btn {
       margin-top: 20px;
@@ -120,11 +139,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label>Genre</label>
       <input type="text" name="genre" value="<?php echo htmlspecialchars($row['genre']); ?>" required>
 
-      <label>Date</label>
-      <input type="date" name="show_date" value="<?php echo htmlspecialchars($row['show_date']); ?>" required>
+      <label>Duration</label>
+      <input type="text" name="duration" value="<?php echo htmlspecialchars($row['duration']); ?>" required>
+
+      <label>Language</label>
+      <input type="text" name="language" value="<?php echo htmlspecialchars($row['language']); ?>" required>
+
+      <label>Rating</label>
+      <input type="text" name="rating" value="<?php echo htmlspecialchars($row['rating']); ?>" required>
+
+      <label>Description</label>
+      <textarea name="description" required><?php echo htmlspecialchars($row['description']); ?></textarea>
+
+      <label>Image Path / URL</label>
+      <input type="text" name="image" value="<?php echo htmlspecialchars($row['image']); ?>">
 
       <label>Showtimes</label>
       <input type="text" name="showtimes" value="<?php echo htmlspecialchars($row['showtimes']); ?>" required>
+
+      <label>Show Date</label>
+      <input type="text" name="show_date" value="<?php echo htmlspecialchars($row['show_date']); ?>" required>
 
       <label>Hall</label>
       <input type="text" name="hall" value="<?php echo htmlspecialchars($row['hall']); ?>" required>

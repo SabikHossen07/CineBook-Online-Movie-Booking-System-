@@ -11,10 +11,10 @@ if (isset($_GET['id']) && isset($_GET['status'])) {
     $id = (int) $_GET['id'];
     $status = trim($_GET['status']);
 
-    $allowed = ['booked', 'available', 'cancelled', 'pending'];
+    $allowed = ['Confirmed', 'Pending', 'Cancelled'];
 
     if (in_array($status, $allowed)) {
-        $conn->query("UPDATE bookings SET status='$status' WHERE id=$id");
+        $conn->query("UPDATE bookings SET booking_status='$status' WHERE id=$id");
     }
 }
 

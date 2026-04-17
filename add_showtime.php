@@ -12,13 +12,20 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title']);
     $genre = trim($_POST['genre']);
-    $show_date = trim($_POST['show_date']);
+    $duration = trim($_POST['duration']);
+    $language = trim($_POST['language']);
+    $rating = trim($_POST['rating']);
+    $description = trim($_POST['description']);
+    $image = trim($_POST['image']);
     $showtimes = trim($_POST['showtimes']);
+    $show_date = trim($_POST['show_date']);
     $hall = trim($_POST['hall']);
     $price = trim($_POST['price']);
 
-    $sql = "INSERT INTO movies (title, genre, show_date, showtimes, hall, price)
-            VALUES ('$title', '$genre', '$show_date', '$showtimes', '$hall', '$price')";
+    $movie_key = 'MOV' . rand(10000, 99999);
+
+    $sql = "INSERT INTO movies (movie_key, title, genre, duration, language, rating, description, image, showtimes, show_date, hall, price)
+            VALUES ('$movie_key', '$title', '$genre', '$duration', '$language', '$rating', '$description', '$image', '$showtimes', '$show_date', '$hall', '$price')";
 
     if ($conn->query($sql) === TRUE) {
         header("Location: manager_showtimes.php");
@@ -43,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       padding: 0;
     }
     .container {
-      max-width: 700px;
-      margin: 60px auto;
+      max-width: 760px;
+      margin: 40px auto;
       background: linear-gradient(135deg, #111827, #1e293b);
       padding: 30px;
       border-radius: 20px;
@@ -60,13 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin: 14px 0 8px;
       font-weight: bold;
     }
-    input {
+    input, textarea {
       width: 100%;
       padding: 12px;
       border-radius: 10px;
       border: none;
       outline: none;
       font-size: 15px;
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
     }
     button, .back-btn {
       margin-top: 20px;
@@ -105,11 +116,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label>Genre</label>
       <input type="text" name="genre" required>
 
-      <label>Date</label>
-      <input type="date" name="show_date" required>
+      <label>Duration</label>
+      <input type="text" name="duration" placeholder="2h 49m" required>
+
+      <label>Language</label>
+      <input type="text" name="language" placeholder="English" required>
+
+      <label>Rating</label>
+      <input type="text" name="rating" placeholder="PG-13" required>
+
+      <label>Description</label>
+      <textarea name="description" required></textarea>
+
+      <label>Image Path / URL</label>
+      <input type="text" name="image" placeholder="images/movie.jpg">
 
       <label>Showtimes</label>
       <input type="text" name="showtimes" placeholder="10:00 AM, 1:30 PM, 4:30 PM" required>
+
+      <label>Show Date</label>
+      <input type="text" name="show_date" placeholder="2026-04-20" required>
 
       <label>Hall</label>
       <input type="text" name="hall" required>

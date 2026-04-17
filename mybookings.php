@@ -72,31 +72,76 @@ $result = $stmt->get_result();
       </p>
     <?php endif; ?>
 
+    <?php if (isset($_GET['cancel']) && $_GET['cancel'] === 'closed'): ?>
+      <p style="text-align:center; background:#f59e0b; color:black; padding:12px; border-radius:8px; margin-bottom:20px; font-weight:bold;">
+        Booking cannot be cancelled within 2 hours of show start time.
+      </p>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['cancel']) && $_GET['cancel'] === 'already'): ?>
+      <p style="text-align:center; background:#475569; color:white; padding:12px; border-radius:8px; margin-bottom:20px; font-weight:bold;">
+        This booking is already cancelled.
+      </p>
+    <?php endif; ?>
+
     <?php if ($result->num_rows > 0): ?>
       <?php while ($row = $result->fetch_assoc()): ?>
+        <?php
+          $showDateTime = strtotime($row['show_date'] . ' ' . $row['show_time']);
+          $currentTime = time();
+          $cancelDeadline = $showDateTime - (2 * 60 * 60);
+
+          $canCancel = false;
+          if ($row['booking_status'] !== 'Cancelled' && $currentTime < $cancelDeadline) {
+              $canCancel = true;
+          }
+
+          $status = $row['booking_status'];
+          $badgeText = $status;
+          $statusClass = 'status-confirmed';
+
+          if ($status === 'Cancelled') {
+              $statusClass = 'status-cancelled';
+          } elseif ($status === 'Pending') {
+              $statusClass = 'status-pending';
+          } else {
+              $statusClass = 'status-confirmed';
+          }
+        ?>
         <div class="booking-card premium-booking-card">
           <div class="booking-card-left">
             <img src="https://picsum.photos/220/300?random=<?php echo rand(31, 99); ?>" alt="Movie Poster">
           </div>
 
           <div class="booking-card-right">
-            <span class="details-badge">Confirmed</span>
+            <span class="details-badge"><?php echo htmlspecialchars($badgeText); ?></span>
             <h2><?php echo htmlspecialchars($row['movie_name']); ?></h2>
             <p><strong>Date:</strong> <?php echo htmlspecialchars($row['show_date']); ?></p>
             <p><strong>Show Time:</strong> <?php echo htmlspecialchars($row['show_time']); ?></p>
             <p><strong>Seat(s):</strong> <?php echo htmlspecialchars($row['seats']); ?></p>
             <p><strong>Total Price:</strong> ৳<?php echo htmlspecialchars($row['total_price']); ?></p>
             <p><strong>Booked At:</strong> <?php echo htmlspecialchars($row['created_at']); ?></p>
-            <p><strong>Status:</strong> <span class="status-confirmed"><?php echo htmlspecialchars($row['booking_status']); ?></span></p>
+            <p><strong>Status:</strong> <span class="<?php echo $statusClass; ?>"><?php echo htmlspecialchars($row['booking_status']); ?></span></p>
 
             <div class="details-actions">
-            <a href="ticket.php?id=<?php echo $row['id']; ?>" class="book-now-btn">View Ticket</a>
-            <a href="movies.php" class="book-now-btn">Book Again</a>
-            <a href="cancel_booking.php?id=<?php echo $row['id']; ?>" 
-            class="book-now-btn outline-btn"
-            onclick="return confirm('Are you sure you want to cancel this booking?');">
-            Cancel Booking
-            </a>
+              <a href="ticket.php?id=<?php echo $row['id']; ?>" class="book-now-btn">View Ticket</a>
+              <a href="movies.php" class="book-now-btn">Book Again</a>
+
+              <?php if ($canCancel): ?>
+                <a href="cancel_booking.php?id=<?php echo $row['id']; ?>"
+                   class="book-now-btn outline-btn"
+                   onclick="return confirm('Are you sure you want to cancel this booking?');">
+                  Cancel Booking
+                </a>
+              <?php elseif ($row['booking_status'] === 'Cancelled'): ?>
+                <span class="book-now-btn outline-btn" style="opacity:0.65; cursor:not-allowed;">
+                  Already Cancelled
+                </span>
+              <?php else: ?>
+                <span class="book-now-btn outline-btn" style="opacity:0.65; cursor:not-allowed;">
+                  Cancellation Closed
+                </span>
+              <?php endif; ?>
             </div>
           </div>
         </div>

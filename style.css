@@ -2391,3 +2391,17 @@ footer {
 .movie-card {
   transition: 0.3s ease;
 }
+.status-confirmed {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.status-cancelled {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #facc15;
+  font-weight: bold;
+}

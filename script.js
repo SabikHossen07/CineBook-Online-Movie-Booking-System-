@@ -1,15 +1,39 @@
 const typingText = document.getElementById("typing-text");
 
 if (typingText) {
-  const text = "Your Perfect Movie Night Starts Here";
-  let index = 0;
+  const texts = [
+    "Experience Cinema Like Never Before",
+    "Book Your Favorite Movie Tickets",
+    "Your Perfect Movie Night Starts Here"
+  ];
+
+  let textIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
 
   function typeEffect() {
-    if (index < text.length) {
-      typingText.textContent += text.charAt(index);
-      index++;
-      setTimeout(typeEffect, 80);
+    const currentText = texts[textIndex];
+
+    if (isDeleting) {
+      typingText.textContent = currentText.substring(0, charIndex - 1);
+      charIndex--;
+    } else {
+      typingText.textContent = currentText.substring(0, charIndex + 1);
+      charIndex++;
     }
+
+    let speed = isDeleting ? 40 : 80;
+
+    if (!isDeleting && charIndex === currentText.length) {
+      speed = 1500;
+      isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      textIndex = (textIndex + 1) % texts.length;
+      speed = 400;
+    }
+
+    setTimeout(typeEffect, speed);
   }
 
   window.addEventListener("load", typeEffect);
